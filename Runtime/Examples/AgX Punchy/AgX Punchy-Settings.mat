@@ -66,7 +66,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AgX_Look: 99
+    - _AgX_Look: 2
     - _AgX_Sat: 1.4
     - _BumpScale: 1
     - _Cutoff: 0.5

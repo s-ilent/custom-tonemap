@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AgX-Settings
+  m_Name: AgX Base-Settings
   m_Shader: {fileID: 4800000, guid: 35315617276ab08439602eb697f73cb7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -66,7 +66,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AgX_Look: 99
+    - _AgX_Look: 0
     - _AgX_Sat: 1
     - _BumpScale: 1
     - _Cutoff: 0.5

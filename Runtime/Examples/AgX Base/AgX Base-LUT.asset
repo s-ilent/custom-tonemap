@@ -6,7 +6,7 @@ CustomRenderTexture:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AgX-LUT
+  m_Name: AgX Base-LUT
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
@@ -43,7 +43,7 @@ CustomRenderTexture:
   m_InitMaterial: {fileID: 0}
   m_InitColor: {r: 1, g: 1, b: 1, a: 1}
   m_InitTexture: {fileID: 0}
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_InitializationMode: 0
   m_UpdateZoneSpace: 0
   m_CurrentUpdateZoneSpace: 0
