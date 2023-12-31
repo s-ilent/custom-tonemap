@@ -1,0 +1,17 @@
+{
+  "name": "com.s-ilent.customtonemap",
+  "displayName": "Custom Tonemap",
+  "version": "0.0.1",
+  "description": "Describe this Package",
+  "dependencies": {
+    "com.unity.postprocessing": "3.2.2"
+  },
+  "gitDependencies": {},
+  "vpmDependencies": {},
+  "author": {
+    "name": "Silent",
+    "email": "silent@noemail.xyz"
+  },
+  "legacyFolders": {},
+  "legacyFiles": {}
+}
