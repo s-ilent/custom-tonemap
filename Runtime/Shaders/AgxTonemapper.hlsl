@@ -22,9 +22,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// All values used to derive this implementation are sourced from Troy’s initial AgX implementation/OCIO config file available here:
+// Values used to derive this implementation are sourced from Troy’s initial AgX implementation/OCIO config file available here:
 //   https://github.com/sobotka/AgX
 
+// AgX Tone Mapping implementation based on Three.js,
+// which is based on Filament's, which in turn is based
+// on Blender's implementation using rec 2020 primaries
+// https://github.com/mrdoob/three.js/pull/27366
+// https://github.com/google/filament/pull/7236
+// Inputs and outputs are encoded as Linear-sRGB.
 
 class AgxTonemapper
 {
@@ -32,8 +38,19 @@ class AgxTonemapper
     #define FLT_MIN         1.175494351e-38 // Minimum representable positive floating-point number
     #define FLT_MAX         3.402823466e+38 // Maximum representable floating-point number
 
+    static const float3x3 LINEAR_REC2020_TO_LINEAR_SRGB = transpose(float3x3(
+        float3(1.6605, -0.1246, -0.0182), 
+        float3(-0.5876, 1.1329, -0.1006), 
+        float3(-0.0728, -0.0083, 1.1187))
+    );
+    static const float3x3 LINEAR_SRGB_TO_LINEAR_REC2020 = transpose(float3x3(
+        float3(0.6274, 0.0691, 0.0164), 
+        float3(0.3293, 0.9195, 0.088), 
+        float3(0.0433, 0.0113, 0.8956))
+    );
+
     // Mean error^2: 3.6705141e-06
-float3 agxDefaultContrastApprox(float3 x) {
+float3 agxDefaultContrastApprox(float3 x) { 
     float3 x2 = x * x;
     float3 x4 = x2 * x2;
     
@@ -46,21 +63,29 @@ float3 agxDefaultContrastApprox(float3 x) {
             - 0.00232;
     }
 
-    float3 agx(float3 val) {
-    const float3x3 agx_mat = transpose(float3x3(
-        0.842479062253094, 0.0423282422610123, 0.0423756549057051,
-        0.0784335999999992,  0.878468636469772,  0.0784336,
-        0.0792237451477643, 0.0791661274605434, 0.879142973793104));
+float3 agx(float3 val) {
+    const float3x3 AgXInsetMatrix = transpose(float3x3(
+        float3(0.85662717, 0.13731897, 0.11189821), 
+        float3(0.09512124, 0.761242, 0.076799415), 
+        float3(0.048251607, 0.10143904, 0.81130236)
+    ));
         
-    const float min_ev = -12.47393f;
-    const float max_ev = 4.026069f;
+	// LOG2_MIN      = -10.0
+	// LOG2_MAX      =  +6.5
+	// MIDDLE_GRAY   =  0.18
+	const float AgxMinEv = - 12.47393;  // log2( pow( 2, LOG2_MIN ) * MIDDLE_GRAY )
+	const float AgxMaxEv = 4.026069;    // log2( pow( 2, LOG2_MAX ) * MIDDLE_GRAY )
 
-    // Input transform (inset)
-    val = mul(agx_mat, val);
+    // Input transform (inset);
+    val = mul(LINEAR_SRGB_TO_LINEAR_REC2020, val);
+    val = mul(AgXInsetMatrix, val);
     
     // Log2 space encoding
-    val = clamp(log2(val), min_ev, max_ev);
-    val = (val - min_ev) / (max_ev - min_ev);
+    val = max(val, 1e-10); // avoid 0 or negative numbers for log2
+    val = log2(val);
+	val = ( val - AgxMinEv ) / ( AgxMaxEv - AgxMinEv );
+
+    val = saturate(val);
     
     // Apply sigmoid function approximation
     val = agxDefaultContrastApprox(val);
@@ -69,19 +94,21 @@ float3 agxDefaultContrastApprox(float3 x) {
 }
 
 float3 agxEotf(float3 val) {
-    const float3x3 agx_mat_inv = transpose(float3x3(
-        1.19687900512017, -0.0528968517574562, -0.0529716355144438,
-        -0.0980208811401368, 1.15190312990417, -0.0980434501171241,
-        -0.0990297440797205, -0.0989611768448433, 1.15107367264116));
+    const float3x3 AgXOutsetMatrix = transpose(float3x3(
+        float3(1.1271006, -0.14132977, -0.14132977), 
+        float3(-0.11060664, 1.1578237, -0.11060664), 
+        float3(-0.016493939, -0.016493939, 1.2519364)
+    ));
         
     // Inverse input transform (outset)
-    val = mul(agx_mat_inv, val);
+    val = mul(AgXOutsetMatrix, val);
     
     // sRGB IEC 61966-2-1 2.2 Exponent Reference EOTF Display
     // NOTE: We're linearizing the output here. Comment/adjust when
     // *not* using a sRGB render target
-    val = max(val, 0); // Was not in original, but needed to avoid issues after log conversion. 
+    val = max(val, 0); 
     val = pow(val, 2.2);
+    val = mul(LINEAR_REC2020_TO_LINEAR_SRGB, val);
 
     return val;
 }

@@ -62,7 +62,7 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
                 }
                 }
 
-                return float4(position, 1);
+                return float4(max(position, 0), 1);
             }
         ENDCG
         }
