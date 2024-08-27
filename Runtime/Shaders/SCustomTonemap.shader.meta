@@ -3,7 +3,9 @@ guid: 35315617276ab08439602eb697f73cb7
 ShaderImporter:
   externalObjects: {}
   defaultTextures: []
-  nonModifiableTextures: []
+  nonModifiableTextures:
+  - _UnityLogToLinearR1: {fileID: 11700000, guid: 1b859afb42116474d8601639803c4a59,
+      type: 2}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
