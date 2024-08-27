@@ -1,4 +1,4 @@
-class ParamsLogC
+struct ParamsLogC
 {
     float cut;
     float a, b, c, d, e, f;
@@ -6,9 +6,18 @@ class ParamsLogC
 
 class LogColorTransform
 {
-    static const ParamsLogC LogC = {0.011361f, 5.555556f, 0.047996f, 0.244161f, 0.386036f, 5.301883f, 0.092819f};
 
-    // This is only being ran on a small LUT texture so the extra cost is fine
+    static const ParamsLogC LogC =
+    {
+        0.011361, // cut
+        5.555556, // a
+        0.047996, // b
+        0.244161, // c
+        0.386036, // d
+        5.301883, // e
+        0.092819  // f
+    };
+
     #define USE_PRECISE_LOGC 1
 
     float LinearToLogC_Precise(float x)
@@ -30,11 +39,7 @@ class LogColorTransform
             LinearToLogC_Precise(x.z)
         );
     #else
-        return float3(
-            LogC.c * log10(LogC.a * x.x + LogC.b) + LogC.d,
-            LogC.c * log10(LogC.a * x.y + LogC.b) + LogC.d,
-            LogC.c * log10(LogC.a * x.z + LogC.b) + LogC.d
-        );
+        return LogC.c * log10(LogC.a * x + LogC.b) + LogC.d;
     #endif
     }
 
@@ -57,11 +62,7 @@ class LogColorTransform
             LogCToLinear_Precise(x.z)
         );
     #else
-        return float3(
-            (pow(10.0f, (x.x- LogC.d) / LogC.c) - LogC.b) / LogC.a,
-            (pow(10.0f, (x.y- LogC.d) / LogC.c) - LogC.b) / LogC.a,
-            (pow(10.0f, (x.z- LogC.d) / LogC.c) - LogC.b) / LogC.a
-        );
+        return (pow(10.0f, (x - LogC.d) / LogC.c) - LogC.b) / LogC.a;
     #endif
     }
 };
