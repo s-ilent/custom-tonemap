@@ -49,26 +49,33 @@ class AgxTonemapper
         float3(0.0433, 0.0113, 0.8956))
     );
 
-    // Mean error^2: 3.6705141e-06
-float3 agxDefaultContrastApprox(float3 x) { 
-    float3 x2 = x * x;
-    float3 x4 = x2 * x2;
-    
-    return + 15.5     * x4 * x2
-            - 40.14    * x4 * x
-            + 31.96    * x4
-            - 6.868    * x2 * x
-            + 0.4298   * x2
-            + 0.1191   * x
-            - 0.00232;
-    }
-
-float3 agx(float3 val) {
-    const float3x3 AgXInsetMatrix = transpose(float3x3(
+    static const float3x3 AgXInsetMatrix = transpose(float3x3(
         float3(0.85662717, 0.13731897, 0.11189821), 
         float3(0.09512124, 0.761242, 0.076799415), 
         float3(0.048251607, 0.10143904, 0.81130236)
     ));
+    static const float3x3 AgXOutsetMatrix = transpose(float3x3(
+        float3(1.1271006, -0.14132977, -0.14132977), 
+        float3(-0.11060664, 1.1578237, -0.11060664), 
+        float3(-0.016493939, -0.016493939, 1.2519364)
+    ));
+
+    // Mean error^2: 3.6705141e-06
+float3 agxDefaultContrastApprox(float3 x) { 
+    float3 x2 = x * x;
+    float3 x4 = x2 * x2;
+    float3 x6 = x4 * x2;
+    return  - 17.86f    * x6 * x
+            + 78.01f    * x6
+            - 126.7f    * x4 * x
+            + 92.06f    * x4
+            - 28.72f    * x2 * x
+            + 4.361f    * x2
+            - 0.1718f   * x
+            + 0.002857f;
+    }
+
+float3 agx(float3 val) {
         
 	// LOG2_MIN      = -10.0
 	// LOG2_MAX      =  +6.5
@@ -94,11 +101,6 @@ float3 agx(float3 val) {
 }
 
 float3 agxEotf(float3 val) {
-    const float3x3 AgXOutsetMatrix = transpose(float3x3(
-        float3(1.1271006, -0.14132977, -0.14132977), 
-        float3(-0.11060664, 1.1578237, -0.11060664), 
-        float3(-0.016493939, -0.016493939, 1.2519364)
-    ));
         
     // Inverse input transform (outset)
     val = mul(AgXOutsetMatrix, val);
@@ -155,21 +157,5 @@ float3 agxLook(float3 val) {
         // ASC CDL
         val = pow(val * slope + offset, power);
         return luma + sat * (val - luma);
-}
-
-    // Mean error^2: 1.85907662e-06
-float3 defaultContrastApprox(float3 x) {
-    float3 x2 = x * x;
-    float3 x4 = x2 * x2;
-    float3 x6 = x4 * x2;
-    
-    return - 17.86     * x6 * x
-            + 78.01     * x6
-            - 126.7     * x4 * x
-            + 92.06     * x4
-            - 28.72     * x2 * x
-            + 4.361     * x2
-            - 0.1718    * x
-            + 0.002857;
 }
 };
