@@ -61,15 +61,8 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
             */
 
             float3 RemapUV(float3 uv, float width, float height, float depth) {
-                // Calculate the pixel size in UV space
-                float pixelWidth = 1.0 / width;
-                float pixelHeight = 1.0 / height;
-                float pixelDepth = 1.0 / depth;
-
-                // Remap the UV coordinates
-                uv.x = clamp((uv.x - pixelWidth) / (1.0 - 2.0 * pixelWidth), 0.0, 1.0);
-                uv.y = clamp((uv.y - pixelHeight) / (1.0 - 2.0 * pixelHeight), 0.0, 1.0);
-                uv.z = clamp((uv.z - pixelHeight) / (1.0 - 2.0 * pixelHeight), 0.0, 1.0);
+                float3 dim = float3(width, height, depth);
+                uv = floor(uv * dim) / (dim - 1.0);
 
                 // Fix 3D slice coordinates directly
                 uv.z = _CustomRenderTexture3DSlice  / (_CustomRenderTextureDepth - 1.0);
@@ -81,22 +74,16 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
             {
                 float3 position = float3 (IN.localTexcoord.xyz).xyz; 
                 
-                
                 float width = _CustomRenderTextureWidth;
                 float height = _CustomRenderTextureHeight;
                 float depth = _CustomRenderTextureDepth;
                 position = RemapUV(position, width, height, depth);
 
+                // For debugging; shouldn't be necessary
+                // position = tex3D(_UnityLogToLinearR1, position);
                 
-                if (0)
-                {
-                    position = tex3D(_UnityLogToLinearR1, position);
-                }
-                if (1)
-                {
-                    LogColorTransform lct;
-                    position = lct.LogCToLinear(position); 
-                }
+                LogColorTransform lct;
+                position = lct.LogCToLinear(position); 
 
                 switch (_TonemapperType)
                 {
