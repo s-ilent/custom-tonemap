@@ -6,6 +6,8 @@ ShaderImporter:
   nonModifiableTextures:
   - _UnityLogToLinearR1: {fileID: 11700000, guid: 1b859afb42116474d8601639803c4a59,
       type: 2}
+  - _TonyMcMapfaceLUT: {fileID: 11700000, guid: b148a98ff40ad58439eece38b72205e8,
+      type: 3}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

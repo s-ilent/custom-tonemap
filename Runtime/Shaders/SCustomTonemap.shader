@@ -2,9 +2,14 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
 {
     Properties
     {
-        [Enum(Gran Turismo, 0, AgX, 1, Khronos Neutral, 2, Debug None, 99)] _TonemapperType("Tonemapper", Float) = 0
-        [Header(Gran Turismo Settings)]
-        _GTT_Dummy("Todo", Float) = 0
+        [Enum(Gran Turismo, 0, AgX, 1, Khronos Neutral, 2, Tony McMapface, 3, Debug None, 99)] _TonemapperType("Tonemapper", Float) = 0
+        [Space]
+        [Header(Post Tonemap Adjustment LUT)]
+        [NoScaleOffset]_CustomLUT1("LUT 1", 3D) = "_Lut3D" {}
+        _CustomLUT1Intensity("LUT 1 Intensity", Range(0, 1)) = 0.0
+        [NoScaleOffset]_CustomLUT2("LUT 2", 3D) = "_Lut3D" {}
+        _CustomLUT2Intensity("LUT 2 Intensity", Range(0, 1)) = 0.0
+        [Space]
         [Header(AgX Settings)]
         [Enum(Base, 0, Golden, 1, Punchy, 2, Custom, 99)]_AgX_Look("AgX Look", Float) = 0
         [HDR]_AgX_Offset("Custom: Offset", Color) = (0,0,0,0)
@@ -12,6 +17,7 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
         [HDR]_AgX_Power("Custom: Power", Color) = (1,1,1,1)
         _AgX_Sat("Custom: Sat", Float) = 1.0
         [NonModifiableTextureData][HideInInspector]_UnityLogToLinearR1("Unity Log to Linear Transform LUT", 3D) = "_Lut3D"
+        [NonModifiableTextureData][HideInInspector]_TonyMcMapfaceLUT("Tony McMapface Transform LUT", 3D) = "_Lut3D"
     }
 
      SubShader
@@ -38,10 +44,16 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
 
             sampler3D _UnityLogToLinearR1;
 
-            #include "LogColorTransform.hlsl"
+            sampler3D _CustomLUT1;
+            float _CustomLUT1Intensity;
+            sampler3D _CustomLUT2;
+            float _CustomLUT2Intensity;
+
+            #include "LogColorTransform.hlsl" 
             #include "GranTurismoTonemapper.hlsl"
             #include "AgxTonemapper.hlsl"
             #include "KhronosNeutralTonemapper.hlsl" 
+            #include "TonyMcMapfaceTonemapper.hlsl" 
 
             /* 
             On the PP side, external tonemapping is applied like this
@@ -107,6 +119,26 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
                     position = knt.Map(position);
                     break;
                 }
+                case 3:
+                {
+                    TonyMcMapfaceTonemapper tony;
+                    position = tony.map(position);
+                    break;
+                }
+                }
+
+                // Todo...
+                // - Add curve-based grading like GT presentation
+                //   Brightness, contrast (with curve), highlight, midpoint correction...
+                //   https://www.gran-turismo.com/us/gtsport/manual/#!/scapes/content04
+
+                if (_CustomLUT1Intensity > 0)
+                {
+                    position = lerp(position, tex3D(_CustomLUT1, position), _CustomLUT1Intensity);
+                }
+                if (_CustomLUT2Intensity > 0)
+                {
+                    position = lerp(position, tex3D(_CustomLUT2, position), _CustomLUT2Intensity);
                 }
 
                 return float4(max(position, 0), 1);
