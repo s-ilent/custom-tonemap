@@ -2,23 +2,46 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
 {
     Properties
     {
+        [HeaderEx(Tonemapper Settings)]
         [Enum(Gran Turismo, 0, AgX, 1, Khronos Neutral, 2, Tony McMapface, 3, Debug None, 99)] _TonemapperType("Tonemapper", Float) = 0
+        
         [Space]
-        [Header(Post Tonemap Adjustment LUT)]
+        [IfSet(_TonemapperType, 1)]
+        [Enum(Base, 0, Golden, 1, Punchy, 2, Custom, 99)]_AgX_Look("AgX Look", Float) = 0
+        [IfSet(_TonemapperType, 1)][IfSet(_AgX_Look, 99)]
+        [HDR]_AgX_Offset("Custom: Offset", Color) = (0,0,0,0)
+        [IfSet(_TonemapperType, 1)][IfSet(_AgX_Look, 99)]
+        [HDR]_AgX_Slope("Custom: Slope", Color) = (1,1,1,1)
+        [IfSet(_TonemapperType, 1)][IfSet(_AgX_Look, 99)]
+        [HDR]_AgX_Power("Custom: Power", Color) = (1,1,1,1)
+        [IfSet(_TonemapperType, 1)][IfSet(_AgX_Look, 99)]
+        _AgX_Sat("Custom: Sat", Float) = 1.0
+        [Space]
+        [HeaderEx(Pre Tonemap Adjustments)]
+        [GradientDisplay(#409cffff, #ffffffff, #FF3800FF)]
+        _AdjColorTemp("Color Temperature Adjustment", Range(-4000, 4000)) = 0.0
+        [Space]
+        [GradientDisplay(#00FF00FF, #ffffffff, #FF00FFFF)]
+        _AdjColorCast("Color Cast Adjustment (Green-Magenta)", Range(-100, 100)) = 0.0
+        _AdjSaturation("Saturation", Range(0.0, 2.0)) = 1.0
+        [RGBSlider(0.0, 5.0)]_AdjBrightness("Brightness", Vector) = (1.0, 1.0, 1.0, 1.0)
+        [RGBSlider(0.0, 5.0)]_AdjContrast("Contrast", Vector) = (1.0, 1.0, 1.0, 1.0)
+        [RGBSlider(0.0, 5.0)]_AdjHighlight("Highlight", Vector) = (1.0, 1.0, 1.0, 1.0)
+        [Space]
+        _AdjMidpointCorrection("Midpoint Correction", Range(0.0, 5.0)) = 1.0
+        _AdjBlackCorrection("Black Correction", Range(-1.0, 1.0)) = 0.0
+        [Space]
+        [HeaderEx(Post Tonemap Adjustment LUT)]
         [NoScaleOffset]_CustomLUT1("LUT 1", 3D) = "_Lut3D" {}
         _CustomLUT1Intensity("LUT 1 Intensity", Range(0, 1)) = 0.0
         [NoScaleOffset]_CustomLUT2("LUT 2", 3D) = "_Lut3D" {}
         _CustomLUT2Intensity("LUT 2 Intensity", Range(0, 1)) = 0.0
         [Space]
-        [Header(AgX Settings)]
-        [Enum(Base, 0, Golden, 1, Punchy, 2, Custom, 99)]_AgX_Look("AgX Look", Float) = 0
-        [HDR]_AgX_Offset("Custom: Offset", Color) = (0,0,0,0)
-        [HDR]_AgX_Slope("Custom: Slope", Color) = (1,1,1,1)
-        [HDR]_AgX_Power("Custom: Power", Color) = (1,1,1,1)
-        _AgX_Sat("Custom: Sat", Float) = 1.0
         [NonModifiableTextureData][HideInInspector]_UnityLogToLinearR1("Unity Log to Linear Transform LUT", 3D) = "_Lut3D"
         [NonModifiableTextureData][HideInInspector]_TonyMcMapfaceLUT("Tony McMapface Transform LUT", 3D) = "_Lut3D"
     }
+
+    CustomEditor "SilentCustomTonemap.Unity.CustomTonemapInspector"
 
      SubShader
      {
@@ -49,7 +72,17 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
             sampler3D _CustomLUT2;
             float _CustomLUT2Intensity;
 
+            float _AdjColorTemp;
+            float _AdjColorCast;
+            float _AdjSaturation;
+            float3 _AdjBrightness;
+            float3 _AdjContrast;
+            float3 _AdjHighlight;
+            float _AdjMidpointCorrection;
+            float _AdjBlackCorrection;
+
             #include "LogColorTransform.hlsl" 
+            #include "ColourGrading.hlsl" 
             #include "GranTurismoTonemapper.hlsl"
             #include "AgxTonemapper.hlsl"
             #include "KhronosNeutralTonemapper.hlsl" 
@@ -96,6 +129,21 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
                 
                 LogColorTransform lct;
                 position = lct.LogCToLinear(position); 
+
+                // Apply pre-tonemap colour grading
+                ColorGradingPreset cgp = (ColorGradingPreset) 1.0;
+                
+                cgp.colorTemperature = _AdjColorTemp;
+                cgp.colorCastAdjustment = _AdjColorCast;
+                cgp.saturation = _AdjSaturation;
+                cgp.brightness = _AdjBrightness;
+                cgp.contrast = _AdjContrast;
+                cgp.highlight = _AdjHighlight;
+                cgp.midpoint = _AdjMidpointCorrection;
+                cgp.blackCorrection = _AdjBlackCorrection;
+
+                ColourGrading cg;
+                position = cg.colorGradingProcess(cgp, position);
 
                 switch (_TonemapperType)
                 {
