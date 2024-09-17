@@ -19,10 +19,11 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
         [Space]
         [HeaderEx(Pre Tonemap Adjustments)]
         [GradientDisplay(#409cffff, #ffffffff, #FF3800FF)]
-        _AdjColorTemp("Color Temperature Adjustment", Range(-4000, 4000)) = 0.0
+        _AdjColorTemp("Color Temperature", Range(-4000, 4000)) = 0.0
         [Space]
         [GradientDisplay(#00FF00FF, #ffffffff, #FF00FFFF)]
-        _AdjColorCast("Color Cast Adjustment (Green-Magenta)", Range(-100, 100)) = 0.0
+        _AdjColorCast("Color Cast", Range(-100, 100)) = 0.0
+        [Space]
         _AdjSaturation("Saturation", Range(0.0, 2.0)) = 1.0
         [RGBSlider(0.0, 5.0)]_AdjBrightness("Brightness", Vector) = (1.0, 1.0, 1.0, 1.0)
         [RGBSlider(0.0, 5.0)]_AdjContrast("Contrast", Vector) = (1.0, 1.0, 1.0, 1.0)

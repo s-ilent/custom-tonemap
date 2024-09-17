@@ -1,12 +1,12 @@
 struct ColorGradingPreset {
-    float colorTemperature; // 
-    float colorCastAdjustment; // Parameter for green/magenta adjustment
-    float saturation; // Parameter for saturation adjustment
-    float3 brightness; // Parameter for brightness adjustment
-    float3 contrast; // Parameter for contrast adjustment
-    float3 highlight; // Parameter for highlight adjustment
-    float midpoint; // Parameter for midpoint correction
-    float blackCorrection; // Parameter for black correction
+    float colorTemperature; 
+    float colorCastAdjustment; 
+    float saturation; 
+    float3 brightness; 
+    float3 contrast; 
+    float3 highlight; 
+    float midpoint; 
+    float blackCorrection; 
 };
 
 class ColourGrading
