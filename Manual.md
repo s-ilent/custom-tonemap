@@ -10,37 +10,32 @@ The settings for Custom Tonemap are set through Materials specified in the CRT. 
 
 By default, the provided CRTs are set to an Update Mode of "OnLoad". This means they will only be generated once, when the scene is loaded. If you want to alter the material properties in realtime as your scene is running, you will need to change this to Realtime, which will render the LUT every frame. 
 
-If you want to blend between multiple sets of Custom Tonemap settings, you can also have multiple CRTs set to OnLoad, and blend  between them using the Post-Process Volume's Weight parameter.
+If you want to blend between multiple sets of Custom Tonemap settings, you can have multiple CRTs set to OnLoad, and blend  between them using the Post-Process Volume's Weight parameter, which can save performance. 
 
-## How to Adjust Settings
-The settings for each instance of Custom Tonemap are stored in a Material. 
-### Tonemapper
-##### Gran Turismo
-A natural tonemapper developed by Polyphony Digital for their racing game series. 
-
-It's meant to imitate the look of cameras used to capture races and other sports events, and is designed to look natural with a neutral middle. Unlike AgX and Khronos Neutral, it doesn't have any correction for colour shifts. 
-##### AgX
-A tonemapper developed for film and computer graphics by Troy Sobotka and Eary Chow. 
-
-It's designed as a next-generation tonemapper that avoids problems like the "Notorious Six", a quirk in current tonemappers that causes colours to be compressed into various primary colours as they get brighter before reaching pure white. 
-
-As the author puts it, "It provides smooth chromatic attenuation in the image across challenging use cases including wider gamut rendering, real-camera-produced colorimetry etc." Wow! 
-
-[You can read more here.](https://github.com/EaryChow/AgX)
-
-When AgX is selected, you'll also be able to select an "AgX Look" which provides additional colour adjustments as part part of the tonemapping process. You can also select "Custom" as an AgX Look to make your own adjustments to the tonemapping within AgX space. 
-##### Khronos Neutral
-A colour preserving tonemapper developed by Khronos Group for the e-commerce industry. 
-
-The main goal of this tonemapper is to preserve colour contrast and tone even when confronted with varying lighting conditions. As a result, it looks much more saturated than AgX by default, and avoids colour shifting entirely. However, it may not handle scenes with large variances in brightness well. 
-
-[You can read more here.](https://modelviewer.dev/examples/tone-mapping)
-##### Tony McMapface
-A tonemapper designed to be used as a base for further adjustments. "It is intentionally boring, does not increase contrast or saturation, and stays close to the input stimulus where compression isn't necessary." Like AgX, it is designed to avoid unwanted colour shifts towards primary colours.
-
-[You can read more here.](https://github.com/h3r2tic/tony-mc-mapface)
-##### Debug None
-No tonemapper. This is only useful for debugging. Please avoid using it normally. 
+## Settings Overview
+### Tonemapper Settings 
+- Gran Turismo
+    - A natural tonemapper developed by Polyphony Digital for their racing game series. 
+    - It's meant to imitate the look of cameras used to capture races and other sports events, and is designed to look natural with a neutral middle. 
+    - Unlike AgX and others on this list, ![it doesn't have any correction for colour shifts. ](https://github.com/user-attachments/assets/be21b79b-132f-4a2f-a37e-47a28cb5c1af)
+- AgX
+    - A tonemapper developed for film and computer graphics by Troy Sobotka and Eary Chow. 
+    - It's designed as a next-generation tonemapper that avoids problems like the "Notorious Six", a quirk in current tonemappers that causes colours to be compressed into various primary colours as they get brighter before reaching pure white. 
+    - As the author puts it, "It provides smooth chromatic attenuation in the image across challenging use cases including wider gamut rendering, real-camera-produced colorimetry etc." Wow! 
+    - When AgX is selected, you'll also be able to select an "AgX Look" which provides additional colour adjustments as part part of the tonemapping process. You can also select "Custom" as an AgX Look to make your own adjustments to the tonemapping within AgX space. 
+    - [You can read more here.](https://github.com/EaryChow/AgX)
+- Khronos Neutral
+    - A colour preserving tonemapper developed by Khronos Group for the e-commerce industry. 
+    - The main goal of this tonemapper is to preserve colour contrast and tone even when confronted with varying lighting conditions. As a result, it looks much more saturated than AgX by default, and avoids colour shifting entirely. 
+    - It is best suited to environments with very little variance in lighting. 
+    - [You can read more here.](https://modelviewer.dev/examples/tone-mapping)
+- Tony McMapface
+    - A tonemapper designed by Tomasz Stachowiak to be used as a base for further adjustments. 
+    - "It is intentionally boring, does not increase contrast or saturation, and stays close to the input stimulus where compression isn't necessary." Like AgX, it avoids colour shifts towards primary colours.
+    - [You can read more here.](https://github.com/h3r2tic/tony-mc-mapface)
+- Debug None
+    - No tonemapper. This is mainly useful for debugging. Please avoid using it normally. 
+    - It might be useful for advanced users who you provide their own tonemapping through a LUT.
 
 ### Pre-Tonemap Adjustments
 To change the individual RGB components of Brightness, Contrast, and Highlight, double click to swap the mode. You can double click again to swap back to editing the overall value.
