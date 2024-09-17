@@ -9,13 +9,13 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
         [IfSet(_TonemapperType, 1)]
         [Enum(Base, 0, Golden, 1, Punchy, 2, Custom, 99)]_AgX_Look("AgX Look", Float) = 0
         [IfSet(_TonemapperType, 1)][IfSet(_AgX_Look, 99)]
-        [HDR]_AgX_Offset("Custom: Offset", Color) = (0,0,0,0)
+        [RGBSlider(0.0, 5.0)][HDR]_AgX_Offset("Offset", Vector) = (0,0,0,0)
         [IfSet(_TonemapperType, 1)][IfSet(_AgX_Look, 99)]
-        [HDR]_AgX_Slope("Custom: Slope", Color) = (1,1,1,1)
+        [RGBSlider(0.0, 5.0)][HDR]_AgX_Slope("Slope", Vector) = (1,1,1,1)
         [IfSet(_TonemapperType, 1)][IfSet(_AgX_Look, 99)]
-        [HDR]_AgX_Power("Custom: Power", Color) = (1,1,1,1)
+        [RGBSlider(0.0, 5.0)][HDR]_AgX_Power("Power", Vector) = (1,1,1,1)
         [IfSet(_TonemapperType, 1)][IfSet(_AgX_Look, 99)]
-        _AgX_Sat("Custom: Sat", Float) = 1.0
+        _AgX_Sat("Saturation", Float) = 1.0
         [Space]
         [HeaderEx(Pre Tonemap Adjustments)]
         [GradientDisplay(#409cffff, #ffffffff, #FF3800FF)]
@@ -25,6 +25,7 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
         _AdjColorCast("Color Cast", Range(-100, 100)) = 0.0
         [Space]
         _AdjSaturation("Saturation", Range(0.0, 2.0)) = 1.0
+        [Space]
         [RGBSlider(0.0, 5.0)]_AdjBrightness("Brightness", Vector) = (1.0, 1.0, 1.0, 1.0)
         [RGBSlider(0.0, 5.0)]_AdjContrast("Contrast", Vector) = (1.0, 1.0, 1.0, 1.0)
         [RGBSlider(0.0, 5.0)]_AdjHighlight("Highlight", Vector) = (1.0, 1.0, 1.0, 1.0)

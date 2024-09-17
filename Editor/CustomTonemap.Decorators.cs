@@ -520,90 +520,100 @@ namespace SilentCustomTonemap.Unity
 				gradient.colorKeys = colorKeys;
 
 				EditorGUI.BeginDisabledGroup(true);
-				var gradientRect = new Rect(position.x, position.y, position.width - 52.0f, 0);
+				var gradientRect = new Rect(position.x, position.y, position.width - 54.0f, 0);
 				EditorGUI.GradientField(gradientRect, " ", gradient);
 				EditorGUI.EndDisabledGroup();
 			}
 		}
 
+		sealed class RGBSliderDecorator : MaterialPropertyDrawer
+		{
+			private float minRange;
+			private float maxRange;
+			private bool rgbEnabled = false;
 
-sealed class RGBSliderDecorator : MaterialPropertyDrawer
-{
-    private float minRange;
-    private float maxRange;
-    private bool rgbEnabled = false;
+			bool _initialized = false;
 
-    bool _initialized = false;
-
-    public RGBSliderDecorator(float minRange, float maxRange)
-    {
-        this.minRange = minRange;
-        this.maxRange = maxRange;
-    }
-
-    public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
-    {
-        if (prop.type == MaterialProperty.PropType.Color || prop.type == MaterialProperty.PropType.Vector)
-        {
-            Vector4 value = prop.vectorValue;
-			if (!_initialized)
+			public RGBSliderDecorator(float minRange, float maxRange)
 			{
-				prop.ReplacePropertyDrawerWithDecorator(this);
-				_initialized = true;
-            	bool allEqual = Mathf.Approximately(value.x, value.y) && Mathf.Approximately(value.y, value.z) && Mathf.Approximately(value.z, value.w);
-                rgbEnabled = allEqual ? false : true;
+				this.minRange = minRange;
+				this.maxRange = maxRange;
 			}
 
-            EditorGUI.BeginChangeCheck();
+			public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+			{
+				if (prop.type == MaterialProperty.PropType.Color || prop.type == MaterialProperty.PropType.Vector)
+				{
+					bool isColor = prop.type == MaterialProperty.PropType.Color;
+					Vector4 value = prop.vectorValue;
 
-            Rect overallRect = EditorGUILayout.GetControlRect();
-            Rect rRect = EditorGUILayout.GetControlRect();
-            Rect gRect = EditorGUILayout.GetControlRect();
-            Rect bRect = EditorGUILayout.GetControlRect();
+					if (isColor)
+					{
+						Color colorValue = prop.colorValue;
+						value = new Vector4(colorValue.r, colorValue.g, colorValue.b, colorValue.a);
+					}
+					
+					if (!_initialized)
+					{
+						// prop.ReplacePropertyDrawerWithDecorator(this);
+						_initialized = true;
+						bool allEqual = Mathf.Approximately(value.x, value.y) && Mathf.Approximately(value.y, value.z) && Mathf.Approximately(value.z, value.w);
+						rgbEnabled = allEqual ? false : true;
+					}
 
-            if (Event.current.type == EventType.MouseDown && Event.current.clickCount == 2)
-            {
-                if (overallRect.Contains(Event.current.mousePosition) || rRect.Contains(Event.current.mousePosition) || gRect.Contains(Event.current.mousePosition) || bRect.Contains(Event.current.mousePosition))
-                {
-                    rgbEnabled = !rgbEnabled;
-                    Event.current.Use();
-                }
-            }
+					GUILayout.Space( EditorGUIUtility.singleLineHeight * -3f); // Adjust the value to push elements up or down
 
-			float overallValueProxy = (value.x + value.y + value.z) / 3.0f;
+					EditorGUI.BeginChangeCheck();
 
-            EditorGUI.BeginDisabledGroup(rgbEnabled);
-            float overallValue = EditorGUI.Slider(overallRect, label, rgbEnabled ? overallValueProxy : value.x, minRange, maxRange);
-            EditorGUI.EndDisabledGroup();
+					Rect overallRect = EditorGUILayout.GetControlRect();
+					Rect rRect = EditorGUILayout.GetControlRect();
+					Rect gRect = EditorGUILayout.GetControlRect();
+					Rect bRect = EditorGUILayout.GetControlRect();
 
-            EditorGUI.BeginDisabledGroup(!rgbEnabled);
-            float r = EditorGUI.Slider(rRect, "R", value.x, minRange, maxRange);
-            float g = EditorGUI.Slider(gRect, "G", value.y, minRange, maxRange);
-            float b = EditorGUI.Slider(bRect, "B", value.z, minRange, maxRange);
-            EditorGUI.EndDisabledGroup();
+					if (Event.current.type == EventType.MouseDown && Event.current.clickCount == 2)
+					{
+						if (overallRect.Contains(Event.current.mousePosition) || rRect.Contains(Event.current.mousePosition) || gRect.Contains(Event.current.mousePosition) || bRect.Contains(Event.current.mousePosition))
+						{
+							rgbEnabled = !rgbEnabled;
+							Event.current.Use();
+						}
+					}
 
-            if (EditorGUI.EndChangeCheck())
-            {
-                if (!rgbEnabled)
-                {
-                    prop.vectorValue = new Vector4(overallValue, overallValue, overallValue, overallValue);
-                }
-                else
-                {
-                    prop.vectorValue = new Vector4(r, g, b, 1.0f);
-                }
-            }
-        }
-        else
-        {
-            EditorGUI.LabelField(position, label, "Use with Color or Vector only.");
-        }
-    }
-}
+					float overallValueProxy = (value.x + value.y + value.z) / 3.0f;
 
+					EditorGUI.BeginDisabledGroup(rgbEnabled);
+					float overallValue = EditorGUI.Slider(overallRect, label, rgbEnabled ? overallValueProxy : value.x, minRange, maxRange);
+					EditorGUI.EndDisabledGroup();
 
+					EditorGUI.BeginDisabledGroup(!rgbEnabled);
+					float r = EditorGUI.Slider(rRect, "R", value.x, minRange, maxRange);
+					float g = EditorGUI.Slider(gRect, "G", value.y, minRange, maxRange);
+					float b = EditorGUI.Slider(bRect, "B", value.z, minRange, maxRange);
+					EditorGUI.EndDisabledGroup();
 
+					if (EditorGUI.EndChangeCheck())
+					{
+						if (!rgbEnabled)
+						{
+							value = new Vector4(overallValue, overallValue, overallValue, overallValue);
+						}
+						else
+						{
+							value = new Vector4(r, g, b, 1.0f);
+						}
+					}
 
+					prop.vectorValue = value;
 
+					if (isColor) prop.colorValue = value;
+
+					prop.SkipRemainingDrawers(this);
+				}
+				else
+				{
+					EditorGUI.LabelField(position, label, "Use with Color or Vector only.");
+				}
+			}
+		}
     }
 }
