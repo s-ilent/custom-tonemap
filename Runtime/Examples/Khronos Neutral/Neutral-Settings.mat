@@ -28,6 +28,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CustomLUT1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomLUT2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -74,9 +82,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AdjBlackCorrection: 0
+    - _AdjColorCast: 0
+    - _AdjColorTemp: 0
+    - _AdjMidpointCorrection: 1
+    - _AdjSaturation: 1
     - _AgX_Look: 0
     - _AgX_Sat: 1.4
     - _BumpScale: 1
+    - _CustomLUT1Intensity: 0
+    - _CustomLUT2Intensity: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -95,6 +110,9 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
+    - _AdjBrightness: {r: 1, g: 1, b: 1, a: 1}
+    - _AdjContrast: {r: 1, g: 1, b: 1, a: 1}
+    - _AdjHighlight: {r: 1, g: 1, b: 1, a: 1}
     - _AgX_Offset: {r: 0, g: 0, b: 0, a: 0}
     - _AgX_Power: {r: 1.35, g: 1.35, b: 1.35, a: 1}
     - _AgX_Slope: {r: 1, g: 1, b: 1, a: 1}
