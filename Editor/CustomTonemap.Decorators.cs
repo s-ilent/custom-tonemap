@@ -586,9 +586,11 @@ namespace SilentCustomTonemap.Unity
 					EditorGUI.EndDisabledGroup();
 
 					EditorGUI.BeginDisabledGroup(!rgbEnabled);
+					EditorGUI.indentLevel++;
 					float r = EditorGUI.Slider(rRect, "R", value.x, minRange, maxRange);
 					float g = EditorGUI.Slider(gRect, "G", value.y, minRange, maxRange);
 					float b = EditorGUI.Slider(bRect, "B", value.z, minRange, maxRange);
+					EditorGUI.indentLevel--;
 					EditorGUI.EndDisabledGroup();
 
 					if (EditorGUI.EndChangeCheck())
