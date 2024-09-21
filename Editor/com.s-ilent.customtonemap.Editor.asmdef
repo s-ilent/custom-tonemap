@@ -1,14 +1,18 @@
 {
-  "name": "com.s-ilent.customtonemap.Editor",
-  "references": [
-    "com.s-ilent.customtonemap"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "autoReferenced": true,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "defineConstraints": [],
-  "optionalUnityReferences": []
+    "name": "com.s-ilent.customtonemap.Editor",
+    "rootNamespace": "",
+    "references": [
+        "com.s-ilent.customtonemap"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
