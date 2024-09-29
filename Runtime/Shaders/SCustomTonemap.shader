@@ -45,10 +45,12 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
 
     CustomEditor "SilentCustomTonemap.Unity.CustomTonemapInspector"
 
-     SubShader
-     {
+    SubShader
+    {
         Lighting Off
         Blend One Zero
+
+        Tags {"PreviewType" = "Plane"}
 
         Pass
         {
@@ -176,11 +178,6 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
                     break;
                 }
                 }
-
-                // Todo...
-                // - Add curve-based grading like GT presentation
-                //   Brightness, contrast (with curve), highlight, midpoint correction...
-                //   https://www.gran-turismo.com/us/gtsport/manual/#!/scapes/content04
 
                 if (_CustomLUT1Intensity > 0)
                 {

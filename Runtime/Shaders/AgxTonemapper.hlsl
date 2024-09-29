@@ -151,8 +151,6 @@ float3 agxLook(float3 val) {
             break;
         }
         }
-        // Mystery offset needed to avoid issues log conversion. 
-        offset += 0.008;
         
         // ASC CDL
         val = pow(val * slope + offset, power);
