@@ -1,8 +1,8 @@
 {
   "name": "com.s-ilent.customtonemap",
   "displayName": "Custom Tonemap",
-  "version": "0.0.1",
-  "description": "Describe this Package",
+  "version": "1.0.0",
+  "description": "Alternate colour grading system for Unity/VRchat using custom render textures.",
   "dependencies": {
     "com.unity.postprocessing": "3.2.2"
   },

@@ -17,10 +17,10 @@ If you want to blend between multiple sets of Custom Tonemap settings, you can h
 - Gran Turismo
     - A natural tonemapper developed by Polyphony Digital for their racing game series. 
     - It's meant to imitate the look of cameras used to capture races and other sports events, and is designed to look natural with a neutral middle. 
-    - Unlike AgX and others on this list, ![it doesn't have any correction for colour shifts. ](https://github.com/user-attachments/assets/be21b79b-132f-4a2f-a37e-47a28cb5c1af)
+    - Unlike AgX and others on this list, [it doesn't have any correction for colour shifts.](https://github.com/user-attachments/assets/be21b79b-132f-4a2f-a37e-47a28cb5c1af)
 - AgX
     - A tonemapper developed for film and computer graphics by Troy Sobotka and Eary Chow. 
-    - It's designed as a next-generation tonemapper that avoids problems like the "Notorious Six", a quirk in current tonemappers that causes colours to be compressed into various primary colours as they get brighter before reaching pure white. 
+    - It's designed as a next-generation tonemapper that avoids [problems like the "Notorious Six"](https://user-images.githubusercontent.com/59176246/228655449-0b9b5e7b-e962-400f-bfb5-56c104bc7cd9.png), a quirk in current tonemappers that causes colours to be compressed into various primary colours as they get brighter before reaching pure white. 
     - As the author puts it, "It provides smooth chromatic attenuation in the image across challenging use cases including wider gamut rendering, real-camera-produced colorimetry etc." Wow! 
     - When AgX is selected, you'll also be able to select an "AgX Look" which provides additional colour adjustments as part part of the tonemapping process. You can also select "Custom" as an AgX Look to make your own adjustments to the tonemapping within AgX space. 
     - [You can read more here.](https://github.com/EaryChow/AgX)
