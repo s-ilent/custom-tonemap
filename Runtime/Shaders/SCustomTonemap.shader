@@ -3,7 +3,7 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
     Properties
     {
         [HeaderEx(Tonemapper Settings)]
-        [Enum(Gran Turismo, 0, AgX, 1, Khronos Neutral, 2, Tony McMapface, 3, Debug None, 99)] _TonemapperType("Tonemapper", Float) = 0
+        [Enum(Gran Turismo, 0, AgX, 1, Khronos Neutral, 2, Tony McMapface, 3, Gran Turismo 7, 4, Debug None, 99)] _TonemapperType("Tonemapper", Float) = 0
         
         [Space]
         [IfSet(_TonemapperType, 1)]
@@ -91,6 +91,7 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
             #include "AgxTonemapper.hlsl"
             #include "KhronosNeutralTonemapper.hlsl" 
             #include "TonyMcMapfaceTonemapper.hlsl" 
+            #include "GranTurismo7Tonemapper.hlsl"
 
             /* 
             On the PP side, external tonemapping is applied like this
@@ -175,6 +176,12 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
                 {
                     TonyMcMapfaceTonemapper tony;
                     position = tony.map(position);
+                    break;
+                }
+                case 4:
+                {
+                    GT7Tonemapper tone;
+                    position = tone.ApplyToneMapping(position);
                     break;
                 }
                 }
