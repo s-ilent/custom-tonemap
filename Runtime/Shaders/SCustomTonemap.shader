@@ -18,10 +18,10 @@ Shader "Silent/CustomRenderTexture/CustomTonemap"
         _AgX_Sat("Saturation", Float) = 1.0
         [Space]
         [HeaderEx(Pre Tonemap Adjustments)]
-        [GradientDisplay(#409cffff, #ffffffff, #FF3800FF)]
+        [GradientDisplay( #409cffff, #ffffffff, #FF3800FF)]
         _AdjColorTemp("Color Temperature", Range(-4000, 4000)) = 0.0
         [Space]
-        [GradientDisplay(#00FF00FF, #ffffffff, #FF00FFFF)]
+        [GradientDisplay( #00FF00FF, #ffffffff, #FF00FFFF)]
         _AdjColorCast("Color Cast", Range(-100, 100)) = 0.0
         [Space]
         _AdjSaturation("Saturation", Range(0.0, 2.0)) = 1.0
