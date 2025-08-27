@@ -4,13 +4,16 @@ This manual will provide a brief overview of the settings in Custom Tonemap. It'
 ## How Custom Tonemap Works
 Custom Tonemap is a replacement for the tonemapping and colour grading system in Unity's default post-processing stack. In the post-processing stack, you can provide an external texture to use for colour grading. By using a custom render texture (CRT) for this colour grading texture, we can use our own colour grading and tonemapping systems without breaking compatibility with VRC. 
 
-CRTs represent buffers that Unity will render a specified material/shader into. Custom Tonemap provides a set of CRTs already configured to work with the post-processing stack and a set of profiles. If you want to use them in your own profiles, set the Mode in Colour Grading to External, and place the CRT into the Lookup Texture field. 
+CRTs represent buffers that Unity will render a specified material/shader into. Custom Tonemap provides a set of CRTs already configured to work with the post-processing stack and a set of profiles. If you want to use one of these CRTs in your own post-processing profiles, 
+1. Add or edit an existing Colour Grading effect on the profile. 
+2. Set the Mode in Colour Grading to External.
+3. Place the CRT/LUT into the Lookup Texture field. 
 
-The settings for Custom Tonemap are set through Materials specified in the CRT. If you want to tweak the colour grading settings, I recommend copying the example files into your project first. Otherwise, they will probably be overwritten when you update Custom Tonemap. 
+The settings for Custom Tonemap are set through Materials specified in the CRT. If you want to tweak the colour grading settings, copy the example files into your project first. Otherwise, they will be overwritten when you update Custom Tonemap. 
 
 By default, the provided CRTs are set to an Update Mode of "OnLoad". This means they will only be generated once, when the scene is loaded. If you want to alter the material properties in realtime as your scene is running, you will need to change this to Realtime, which will render the LUT every frame. 
 
-If you want to blend between multiple sets of Custom Tonemap settings, you can have multiple CRTs set to OnLoad, and blend  between them using the Post-Process Volume's Weight parameter, which can save performance. 
+If you want to blend between multiple sets of Custom Tonemap settings, you can have multiple CRTs set to OnLoad, and blend between them using the Post-Process Volume's Weight parameter, which can save performance. 
 
 ## Settings Overview
 ### Tonemapper Settings 
@@ -33,6 +36,11 @@ If you want to blend between multiple sets of Custom Tonemap settings, you can h
     - A tonemapper designed by Tomasz Stachowiak to be used as a base for further adjustments. 
     - "It is intentionally boring, does not increase contrast or saturation, and stays close to the input stimulus where compression isn't necessary." Like AgX, it avoids colour shifts towards primary colours.
     - [You can read more here.](https://github.com/h3r2tic/tony-mc-mapface)
+- Gran Turismo 7
+    - A natural tonemapper developed by Polyphony Digital for their racing game series. 
+    - It's meant to imitate the look of cameras used to capture races and other sports events, and is designed to look natural with a neutral middle. 
+    - This reworked tonemapper includes compensation for hue shifts, but only for bright highlights, maintaining colour saturation compared to AgX.
+    - [You can read more here.](https://blog.selfshadow.com/publications/s2025-shading-course/pdi/s2025_pbs_pdi_slides.pdf)
 - Debug None
     - No tonemapper. This is mainly useful for debugging. Please avoid using it normally. 
     - It might be useful for advanced users who you provide their own tonemapping through a LUT.
